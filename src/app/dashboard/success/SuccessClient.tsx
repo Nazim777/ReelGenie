@@ -30,10 +30,6 @@ export default function SuccessPage() {
         const data = await res.json();
 
         if (data.success) {
-          setUserDetail({
-            ...userDetail,
-            credits: (userDetail.credits || 0),
-          });
           router.push("/dashboard");
         } else {
           toast.error("Payment verification failed. Please contact support.");

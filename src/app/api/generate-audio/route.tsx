@@ -53,12 +53,12 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, id } = await req.json();
+    const { text, id,voiceId } = await req.json();
     console.log("id", id, "text", text);
 
-    if (!text || !id) {
+    if (!text || !id || !voiceId) {
       return NextResponse.json(
-        { error: "Missing 'text' or 'id' field" },
+        { error: "Missing 'text' or 'id' or 'voiceId' field" },
         { status: 400 }
       );
     }
@@ -68,11 +68,11 @@ export async function POST(req: NextRequest) {
     // console.log(voices);
 
     // 🟢 Use a valid default voice (e.g., "21m00Tcm4TlvDq8ikWAM") — this one always exists
-    const voiceId = "21m00Tcm4TlvDq8ikWAM"; // "Rachel" sometimes returns 404
+    const SelectedVoiceId = voiceId || "21m00Tcm4TlvDq8ikWAM"; // "Rachel" sometimes returns 404
 
     // Generate speech
     const audioStream = await withTimeout(
-      client.textToSpeech.convert(voiceId, {
+      client.textToSpeech.convert(SelectedVoiceId, {
         text,
         model_id: "eleven_turbo_v2", // or "eleven_monolingual_v1"
         voice_settings: { stability: 0.5, similarity_boost: 0.75 },

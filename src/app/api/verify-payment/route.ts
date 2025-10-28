@@ -43,12 +43,18 @@ export async function POST(req: Request) {
     }
 
     // ✅ Update user credits
-   await db
+  const udpatedUser=  await db
       .update(Users)
       .set({
         credits: sql`${Users.credits} + ${credits}`,
       })
-      .where(eq(Users.id, userId));
+      .where(eq(Users.id, userId)).returning({
+    id: Users.id,
+    name: Users.name,
+    email: Users.email,
+    imageUrl: Users.imageUrl,
+    credits: Users.credits,
+  });;
 
     // ✅ Record the payment
     await db.insert(Payments).values({
@@ -57,7 +63,7 @@ export async function POST(req: Request) {
       credits,
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true,user:udpatedUser[0]});
   } catch (error: any) {
     console.error("Error verifying payment:", error);
     return NextResponse.json(

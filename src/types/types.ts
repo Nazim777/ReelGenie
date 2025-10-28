@@ -6,6 +6,7 @@ export type formDataProps = {
   topic?: string
   imageStyle?: string
   duration?: string
+  voiceId?: string
 }
 
 export type VideoScriptItem = {

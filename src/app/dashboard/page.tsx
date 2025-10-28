@@ -65,6 +65,7 @@ const Dashboard = () => {
         throw new Error("Failed to verify user");
       }
       const data = await response.json();
+      console.log("Verified user data:", data);
       setUserDetail(data.result);
       return data;
     } catch (err) {

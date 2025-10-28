@@ -16,6 +16,7 @@ import PlayerDialog from "../_components/PlayerDialog";
 import { useUserDetailContext } from "@/app/_context/UserDetailContext";
 import { toast } from "sonner";
 import { eq } from "drizzle-orm";
+import SelectVoice from "./_components/SelectVoice";
 
 const CreateNew = () => {
   const [formData, setFormData] = useState<formDataProps>({});
@@ -52,7 +53,8 @@ const CreateNew = () => {
     if (
       formData.duration === undefined ||
       formData.topic === undefined ||
-      formData.imageStyle === undefined
+      formData.imageStyle === undefined ||
+      formData.voiceId === undefined
     ) {
       toast.error("Please fill all the fields");
       return;
@@ -118,7 +120,11 @@ const CreateNew = () => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ text: script, id: id }),
+        body: JSON.stringify({
+          text: script,
+          id: id,
+          voiceId: formData.voiceId,
+        }),
       });
       if (!response.ok) {
         const errorMessage = await response.text(); // Get the raw error response
@@ -293,6 +299,7 @@ const CreateNew = () => {
       <div className="mt-10 shadow-md p-10 lg:px-6">
         <SelectTopic onUserSelect={handleInputChange} />
         <SelectStyle onUserSelect={handleInputChange} />
+         <SelectVoice onUserSelect={handleInputChange} />
         <SelectDuration onUserSelect={handleInputChange} />
 
         <Button onClick={createClickHandler} className="mt-10 w-full">
