@@ -1,73 +1,3 @@
-// 'use client'
-// import { useUserDetailContext } from "@/app/_context/UserDetailContext"
-// import { Button } from "@/components/ui/button"
-// import { db } from "@/config/db"
-// import { Users } from "@/config/schema"
-// import { useRouter } from "next/navigation"
-// import { useState } from "react"
-
-// type BuyCreditsProps = {
-//   credits?: number
-//   amount?: number
-// }
-
-// const BuyCreditsPage = () => {
-//   const [selectedOption, setSelectedOption] = useState<BuyCreditsProps | null>(null)
-//   const router = useRouter()
-
-//   const { userDetail, setUserDetail } = useUserDetailContext()
-
-//   const creditsOption = [
-//     { credits: 10, amount: 2.99 },
-//     { credits: 20, amount: 5.99 },
-//     { credits: 30, amount: 8.99 },
-//     { credits: 50, amount: 11.99 },
-//     { credits: 100, amount: 20.99 }
-//   ];
-
-//   const onPaymentSuccess = async () => {
-//     console.log("Payment Success");
-//     // Update user details db
-//     if (selectedOption) {
-//       const result = await db.update(Users).set({
-//         credits: (userDetail?.credits || 0) + (selectedOption?.credits || 0)
-//       }).returning({ id: Users.id })
-
-//       if (result) {
-//         setUserDetail(prev => ({
-//           ...prev,
-//           credits: (userDetail?.credits || 0) + (selectedOption?.credits || 0)
-//         }))
-//         router.push('/dashboard')
-//       }
-//     }
-//   }
-
-//   return (
-//     <div>
-//       <h2 className="font-bold text-2xl">Buy More Credits</h2>
-//       <p>Unlock endless possibilities - Buy more credits to create your ideal videos!✨</p>
-
-//       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-10 gap-6">
-//         {creditsOption.map((item, idx) => (
-//           <div key={idx} className={`flex flex-col gap-2 justify-center items-center border border-lightgray p-4 md:py-7 md:px-5 rounded-lg max-w-[230px]
-//             ${selectedOption?.credits == item.credits && 'border-primary'}`}>
-
-//             <h2 className="font-bold text-3xl">{item.credits}</h2>
-//             <h2 className="font-medium text-xl">Credits</h2>
-//             <Button className="w-full" onClick={() => setSelectedOption(item)}>
-//               Select
-//             </Button>
-//             <h2 className="font-medium text-primary">${item.amount}</h2>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default BuyCreditsPage
-
 
 
 
@@ -78,6 +8,7 @@ import { useUserDetailContext } from "@/app/_context/UserDetailContext";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -129,31 +60,91 @@ export default function BuyCreditsPage() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="font-bold text-2xl mb-4">Buy More Credits</h2>
+    <motion.div
+      className="p-6"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <motion.h2
+        className="font-bold text-3xl mb-6 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+      >
+        Buy More Credits 💳
+      </motion.h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <motion.div
+        className="grid grid-cols-2 md:grid-cols-3 gap-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+      >
         {creditsOption.map((item, i) => (
-          <div
+          <motion.div
             key={i}
             onClick={() => setSelected(item)}
-            className={`border rounded-lg p-4 cursor-pointer text-center ${
-              selected?.credits === item.credits ? "border-primary" : "border-gray-300"
+            className={`relative border rounded-2xl p-6 cursor-pointer text-center bg-white shadow-sm hover:shadow-lg transition-all ${
+              selected?.credits === item.credits
+                ? "border-primary scale-105 shadow-md"
+                : "border-gray-200"
             }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
           >
-            <h3 className="text-2xl font-bold">{item.credits}</h3>
-            <p className="text-gray-600">${item.amount}</p>
-          </div>
-        ))}
-      </div>
+            <h3 className="text-2xl font-semibold">{item.credits} Credits</h3>
+            <p className="text-gray-600 mt-2">${item.amount}</p>
 
-      <Button
-        onClick={handleCheckout}
-        disabled={!selected || loading}
-        className="mt-6"
+            {/* Animated check mark */}
+            <AnimatePresence>
+              {selected?.credits === item.credits && (
+                <motion.div
+                  className="absolute top-2 right-2 text-primary"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  ✅
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.div
+        className="flex justify-center mt-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
       >
-        {loading ? "Processing..." : `Buy ${selected?.credits || ""} Credits`}
-      </Button>
-    </div>
+        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            onClick={handleCheckout}
+            disabled={!selected || loading}
+            className="px-6 py-3 text-lg"
+          >
+            {loading
+              ? "Processing..."
+              : selected
+              ? `Buy ${selected.credits} Credits`
+              : "Select a Credit Pack"}
+          </Button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
