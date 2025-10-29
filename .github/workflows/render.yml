@@ -1,26 +1,26 @@
-name: Video Production Pipeline 
+name: Video Production Pipeline
 
 on:
   workflow_dispatch:
     inputs:
       audioURL:
-        description: 'URL of the audio file'
+        description: "URL of the audio file"
         required: true
       captionJsonUrl:
-        description: 'URL of the uploaded captions JSON file'
+        description: "URL of the uploaded captions JSON file"
         required: true
       imageJson:
-        description: 'JSON array of image URLs'
+        description: "JSON array of image URLs"
         required: true
       caption_Style:
-        description: 'Caption style string'
+        description: "Caption style string"
         required: true
       videoId:
-        description: 'ID of the video record in Neon'
+        description: "ID of the video record in Neon"
         required: true
       durationInFrames:
-        description: 'Total duration of video in frames'
-        required: false  
+        description: "Total duration of video in frames"
+        required: true
 
 jobs:
   render-and-upload:
@@ -38,7 +38,7 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      # ✅ Updated section to match your RemotionVideo props
+      # ✅ Prepare Remotion props from inputs
       - name: Prepare Input Data
         run: |
           echo "📥 Downloading captions JSON from: ${{ github.event.inputs.captionJsonUrl }}"
@@ -47,10 +47,8 @@ jobs:
           echo '${{ github.event.inputs.imageJson }}' | jq . > image.json
           echo "${{ github.event.inputs.caption_Style }}" > style.txt
 
-          # Use durationInFrames from workflow input (passed from API)
           DURATION_FRAMES=${{ github.event.inputs.durationInFrames }}
-
-          echo "Duration in frames: $DURATION_FRAMES"
+          echo "🎞 Duration in frames: $DURATION_FRAMES"
 
           jq -n \
             --arg audioFileUrl "${{ github.event.inputs.audioURL }}" \
@@ -66,11 +64,48 @@ jobs:
               durationInFrames: $durationInFrames
             }' > input-props.json
 
-          echo "✅ Final input-props.json:"
+          echo "✅ Created input-props.json"
           cat input-props.json
 
+      # ✅ Dynamically create the entry file with the correct duration
+      - name: Create dynamic Remotion entry
+        run: |
+          TMP_ENTRY=src/tmp-entry.tsx
+          mkdir -p src
+          echo "import { registerRoot } from 'remotion';
+          import React from 'react';
+          import { Composition } from 'remotion';
+          import RemotionVideo from './app/dashboard/_components/RemotionVideo';
+
+          const defaultProps = {
+            script: [],
+            imageList: [],
+            audioFileUrl: '',
+            captions: [],
+            setDurationInFrame: () => {},
+          };
+
+          export const RemotionRoot = () => (
+            <>
+              <Composition
+                id='RemotionVideo'
+                component={RemotionVideo}
+                durationInFrames={${{ github.event.inputs.durationInFrames }}}
+                fps={30}
+                width={1280}
+                height={720}
+                defaultProps={defaultProps}
+              />
+            </>
+          );
+
+          registerRoot(RemotionRoot);" > $TMP_ENTRY
+
+          echo "✅ Created dynamic entry file at $TMP_ENTRY"
+
+      # ✅ Render the video using the dynamic entry
       - name: Render Video
-        run: npx remotion render src/remotion/index.tsx RemotionVideo out/video.mp4 --props=./input-props.json
+        run: npx remotion render src/tmp-entry.tsx RemotionVideo out/video.mp4 --props=./input-props.json
 
       - name: Verify Render Output
         run: |
@@ -80,6 +115,7 @@ jobs:
           fi
           echo "✅ Render successful - File size: $(du -h out/video.mp4 | cut -f1)"
 
+      # ✅ Upload the rendered video to Cloudinary
       - name: Upload to Cloudinary
         env:
           CLOUDINARY_CLOUD_NAME: dpr4fr2ky
@@ -109,6 +145,7 @@ jobs:
             });
           "
 
+      # ✅ Notify frontend after successful upload
       - name: Notify Frontend
         run: |
           VIDEO_URL=$(jq -r .secure_url cloudinary-response.json)
