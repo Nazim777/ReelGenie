@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       ref: 'master',
       inputs: {
         audioURL: body.audioURL,
-        videoId: body.videoId,
+        videoId: String(body.videoId),
         captionJsonUrl: captionUrl,
         imageJson: JSON.stringify(body.images), // safe to pass directly
         caption_Style: body.caption_Style?.trim() || "default",
