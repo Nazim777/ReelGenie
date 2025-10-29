@@ -19,6 +19,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const lastCaptionEnd = body.captions?.[body.captions.length - 1]?.end ?? 2000;
+
     // Upload only captions JSON to Cloudinary
     const captionBuffer = Buffer.from(JSON.stringify(body.captions));
     const captionUrl = await new Promise<string>((resolve, reject) => {
@@ -51,6 +53,7 @@ export async function POST(request: Request) {
         captionJsonUrl: captionUrl,
         imageJson: JSON.stringify(body.images), // safe to pass directly
         caption_Style: body.caption_Style?.trim() || "default",
+        durationInFrames: String(Math.ceil((lastCaptionEnd / 1000) * 30)),
       }
     });
 

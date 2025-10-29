@@ -19,12 +19,28 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="RemotionVideo"
         component={RemotionVideo}
-        durationInFrames={defaultProps.durationInFrames ?? 60}
+        durationInFrames={defaultProps.durationInFrames ?? 1000}
         fps={30}
         width={1280}
         height={720}
         defaultProps={defaultProps}
       />
+
+      {/* <Composition
+      id="RemotionVideo"
+      component={RemotionVideo}
+      durationInFrames={1000} // placeholder, will be overridden in inputProps
+      fps={30}
+      width={1280}
+      height={720}
+      defaultProps={{
+        script: [],
+        imageList: [],
+        audioFileUrl: '',
+        captions: [],
+        setDurationInFrame: () => {},
+      }}
+    /> */}
     </>
   );
 };

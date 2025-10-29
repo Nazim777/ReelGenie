@@ -16,7 +16,7 @@ on:
         description: 'Caption style string'
         required: true
       videoId:
-        description: 'ID of the video record in Neon (was Convex)'
+        description: 'ID of the video record in Neon'
         required: true
 
 jobs:
@@ -44,16 +44,27 @@ jobs:
           echo '${{ github.event.inputs.imageJson }}' | jq . > image.json
           echo "${{ github.event.inputs.caption_Style }}" > style.txt
 
+          # Compute last caption end in seconds (default 10s if missing)
+          LAST_END_MS=$(jq '.[-1].end // 10000' caption.json)
+          AUDIO_DURATION_SECONDS=$((LAST_END_MS / 1000))
+          FPS=30
+          DURATION_FRAMES=$((AUDIO_DURATION_SECONDS * FPS))
+
+          # Create input-props.json with dynamic duration
+          echo "Duration in frames: $DURATION_FRAMES"
+
           jq -n \
             --arg audioFileUrl "${{ github.event.inputs.audioURL }}" \
             --slurpfile captions caption.json \
             --slurpfile imageList image.json \
+            --argjson durationInFrames $DURATION_FRAMES \
             '{
               script: [],
               audioFileUrl: $audioFileUrl,
               captions: $captions[0],
               imageList: $imageList[0],
-              setDurationInFrame: null
+              setDurationInFrame: null,
+              durationInFrames: $durationInFrames
             }' > input-props.json
 
           echo "✅ Final input-props.json:"
