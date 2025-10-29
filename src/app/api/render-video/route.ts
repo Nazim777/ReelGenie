@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         videoId: body.videoId,
         captionJsonUrl: captionUrl,
         imageJson: JSON.stringify(body.images), // safe to pass directly
-        caption_Style: body.caption_Style,
+        caption_Style: body.caption_Style?.trim() || "default",
       }
     });
 
