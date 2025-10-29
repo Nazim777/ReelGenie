@@ -18,6 +18,9 @@ on:
       videoId:
         description: 'ID of the video record in Neon'
         required: true
+      durationInFrames:
+        description: 'Total duration of video in frames'
+        required: false  
 
 jobs:
   render-and-upload:
