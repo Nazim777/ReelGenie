@@ -14,6 +14,8 @@ export const VideoData = pgTable('videoData', {
   audioFileUrl: varchar('audioFileUrl').notNull(),
   captions: json('captions').notNull(),
   imageList: varchar('imageList').array(),
+  videoUrl: varchar('videoUrl'),
+  status: varchar('status').default('rendering'),
   createdBy: varchar('createdBy').notNull()
 })
 

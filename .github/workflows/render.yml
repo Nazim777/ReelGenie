@@ -1,0 +1,108 @@
+name: Video Production Pipeline 
+
+on:
+  workflow_dispatch:
+    inputs:
+      audioURL:
+        description: 'URL of the audio file'
+        required: true
+      captionJsonUrl:
+        description: 'URL of the uploaded captions JSON file'
+        required: true
+      imageJson:
+        description: 'JSON array of image URLs'
+        required: true
+      caption_Style:
+        description: 'Caption style string'
+        required: true
+      videoId:
+        description: 'ID of the video record in Neon (was Convex)'
+        required: true
+
+jobs:
+  render-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci --legacy-peer-deps
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      # ✅ Updated section to match your RemotionVideo props
+      - name: Prepare Input Data
+        run: |
+          echo "📥 Downloading captions JSON from: ${{ github.event.inputs.captionJsonUrl }}"
+          curl -L "${{ github.event.inputs.captionJsonUrl }}" -o caption.json
+
+          echo '${{ github.event.inputs.imageJson }}' | jq . > image.json
+          echo "${{ github.event.inputs.caption_Style }}" > style.txt
+
+          jq -n \
+            --arg audioFileUrl "${{ github.event.inputs.audioURL }}" \
+            --slurpfile captions caption.json \
+            --slurpfile imageList image.json \
+            '{
+              script: [],
+              audioFileUrl: $audioFileUrl,
+              captions: $captions[0],
+              imageList: $imageList[0],
+              setDurationInFrame: null
+            }' > input-props.json
+
+          echo "✅ Final input-props.json:"
+          cat input-props.json
+
+      - name: Render Video
+        run: npx remotion render src/remotion/index.tsx RemotionVideo out/video.mp4 --props=./input-props.json
+
+      - name: Verify Render Output
+        run: |
+          if [ ! -f out/video.mp4 ]; then
+            echo "❌ Render failed: No output file found"
+            exit 1
+          fi
+          echo "✅ Render successful - File size: $(du -h out/video.mp4 | cut -f1)"
+
+      - name: Upload to Cloudinary
+        env:
+          CLOUDINARY_CLOUD_NAME: dpr4fr2ky
+          CLOUDINARY_API_KEY: 752489572196664
+          CLOUDINARY_API_SECRET: O33fqiD4ptsfaoZ_uJ872CGZRfs
+        run: |
+          npm install cloudinary --legacy-peer-deps
+          node -e "
+            const cloudinary = require('cloudinary').v2;
+            const fs = require('fs');
+            cloudinary.config({
+              cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+              api_key: process.env.CLOUDINARY_API_KEY,
+              api_secret: process.env.CLOUDINARY_API_SECRET
+            });
+            cloudinary.uploader.upload('out/video.mp4', {
+              resource_type: 'video',
+              folder: 'renders',
+              overwrite: true
+            }, (error, result) => {
+              if (error) {
+                console.error('❌ Cloudinary upload failed:', error);
+                process.exit(1);
+              }
+              console.log('✅ Cloudinary upload successful:', result.secure_url);
+              fs.writeFileSync('cloudinary-response.json', JSON.stringify(result));
+            });
+          "
+
+      - name: Notify Frontend
+        run: |
+          VIDEO_URL=$(jq -r .secure_url cloudinary-response.json)
+          echo "🎬 Sending video to frontend: $VIDEO_URL"
+          curl -X POST "https://reel-genie-nine.vercel.app/api/webhook" \
+            -H "Content-Type: application/json" \
+            -d "{\"video_url\": \"$VIDEO_URL\", \"videoId\": \"${{ github.event.inputs.videoId }}\"}"

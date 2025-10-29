@@ -10,7 +10,7 @@ const defaultProps: RemotionVideoProps = {
   imageList: [],
   audioFileUrl: '',
   captions: [],
-  setDurationInFrame: () => {}
+  setDurationInFrame: () => {},
 };
 
 export const RemotionRoot: React.FC = () => {
@@ -19,7 +19,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="RemotionVideo"
         component={RemotionVideo}
-        durationInFrames={defaultProps.durationInFrames || 60}
+        durationInFrames={defaultProps.durationInFrames ?? 60}
         fps={30}
         width={1280}
         height={720}
