@@ -47,13 +47,16 @@ jobs:
           echo '${{ github.event.inputs.imageJson }}' | jq . > image.json
           echo "${{ github.event.inputs.caption_Style }}" > style.txt
 
-          # Compute last caption end in seconds (default 10s if missing)
+          # Compute last caption end in milliseconds (default 10s)
           LAST_END_MS=$(jq '.[-1].end // 10000' caption.json)
-          AUDIO_DURATION_SECONDS=$((LAST_END_MS / 1000))
           FPS=30
-          DURATION_FRAMES=$((AUDIO_DURATION_SECONDS * FPS))
 
-          # Create input-props.json with dynamic duration
+          # Convert milliseconds to frames using floating point
+          DURATION_FRAMES=$(echo "($LAST_END_MS/1000)*$FPS" | bc)
+
+          # Round to nearest integer
+          DURATION_FRAMES=$(printf "%.0f" $DURATION_FRAMES)
+
           echo "Duration in frames: $DURATION_FRAMES"
 
           jq -n \
