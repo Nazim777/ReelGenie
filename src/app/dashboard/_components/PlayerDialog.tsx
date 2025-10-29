@@ -225,6 +225,27 @@ const PlayerDialog = ({ playVideo, videoId }: PlayerDialogProps) => {
     }
   }, [playVideo, videoId, GetVideoData]);
 
+
+  // Poll for download URL
+const pollDownloadURL = useCallback(async () => {
+  if (!videoData) return;
+  const interval = setInterval(async () => {
+    try {
+      const result = await db
+        .select()
+        .from(VideoData)
+        .where(eq(VideoData.id, videoData.id));
+
+      if (result[0]?.videoUrl) {
+        setVideoData((prev) => prev ? { ...prev, DownloadURL: result[0].videoUrl } : prev);
+        clearInterval(interval);
+      }
+    } catch (err) {
+      console.error("Polling error:", err);
+    }
+  }, 5000); // every 5 seconds
+}, [videoData]);
+
   // Trigger rendering via API
   const handleExport = async () => {
     if (!videoData) return;
@@ -248,7 +269,8 @@ const PlayerDialog = ({ playVideo, videoId }: PlayerDialogProps) => {
 
       if (data.message) {
         toast.success("Rendering started! The download will be available when ready.");
-        // Optionally, poll or listen to update DownloadURL
+        // Start polling for DownloadURL
+        pollDownloadURL();
       } else {
         toast.error("Failed to start rendering.");
       }
@@ -256,21 +278,38 @@ const PlayerDialog = ({ playVideo, videoId }: PlayerDialogProps) => {
       console.error(err);
       toast.error("Error exporting video.");
     } finally {
-      setIsExporting(false);
+      if(videoData?.DownloadURL){
+        toast.success("Video is ready for download!");
+        setIsExporting(false);
+      }
     }
   };
 
   // Download video when URL is ready
+  // const handleDownloadVideo = () => {
+  //   if (!videoData?.DownloadURL) return;
+
+  //   const link = document.createElement("a");
+  //   link.href = videoData.DownloadURL;
+  //   link.download = `video_${videoData.id}.mp4`;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
+
   const handleDownloadVideo = () => {
     if (!videoData?.DownloadURL) return;
-
-    const link = document.createElement("a");
+    
+    const link = document.createElement('a');
     link.href = videoData.DownloadURL;
-    link.download = `video_${videoData.id}.mp4`;
+    link.download = `${videoData.id || 'video'}.mp4`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+
+  
 
   // Render dialog only if open and data loaded
   if (!openDialog || !videoData) return null;
@@ -314,7 +353,7 @@ const PlayerDialog = ({ playVideo, videoId }: PlayerDialogProps) => {
                     disabled={isExporting}
                     className="flex gap-2"
                   >
-                    {isExporting ? "Starting Render..." : "Export / Download"}
+                    {isExporting ? "Starting Render..." : "Export"}
                   </Button>
                 )}
 
