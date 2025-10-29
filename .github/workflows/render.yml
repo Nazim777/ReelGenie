@@ -118,9 +118,9 @@ jobs:
       # ✅ Upload the rendered video to Cloudinary
       - name: Upload to Cloudinary
         env:
-          CLOUDINARY_CLOUD_NAME: dpr4fr2ky
-          CLOUDINARY_API_KEY: 752489572196664
-          CLOUDINARY_API_SECRET: O33fqiD4ptsfaoZ_uJ872CGZRfs
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         run: |
           npm install cloudinary --legacy-peer-deps
           node -e "
