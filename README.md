@@ -132,18 +132,20 @@ PERSONAL_ACCESS_TOKEN=
 ```
 
 ## 📦 Installation & Setup
+
 ### 1️⃣ Clone the repo
-git clone https://github.com/Nazim777/reelgenie.git
-cd reelgenie
+```git clone https://github.com/Nazim777/ReelGenie.git```
+
+cd ReelGenie
 
 ### 2️⃣ Install dependencies
-npm install
+``` npm install```
 
 ### 3️⃣ Setup database
-npm run db:push
+```npm run db:push```
 
 ### 4️⃣ Run the dev server
-npm run dev
+```npm run dev```
 
 
 # 💳 Stripe Test Mode
