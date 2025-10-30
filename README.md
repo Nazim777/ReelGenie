@@ -188,14 +188,25 @@ You can toggle modes using the ColorModeDropdown in the header.
 
 # ⚙️ GitHub Actions Video Rendering
 
-### ReelGenie offloads video rendering to GitHub Actions for scalability and reliability.
-### Workflow: .github/workflows/render.yml
-### Runs automatically when a user triggers “Export”
-### Builds the Remotion project
-### Renders the video
-### Uploads the result to Cloudinary
-### Updates database with download URL
-### You can manually trigger this workflow for testing
+ReelGenie offloads video rendering to **GitHub Actions** for scalability and reliability. This ensures videos are rendered in a clean CI/CD environment, independent of the user's browser or device.
+
+### Workflow File
+`.github/workflows/render.yml`
+
+### How it Works
+1. Triggered automatically when a user clicks **“Export”** in the app.
+2. Checks out the project repository and installs dependencies.
+3. Dynamically generates Remotion entry files for rendering.
+4. Renders the video using **Remotion**.
+5. Uploads the rendered video to **Cloudinary**.
+6. Updates the database with the video download URL.
+7. Optional: You can manually trigger the workflow in GitHub Actions for testing or debugging.
+
+### Benefits
+- **Scalable**: Video rendering happens on GitHub servers, not the client.
+- **Reliable**: Isolated environment reduces errors and dependency issues.
+- **Automated**: End-to-end workflow from render to Cloudinary and DB update.
+
 
 You can manually trigger this workflow for testing:
 
@@ -205,15 +216,33 @@ gh workflow run render.yml
 
 # 🧪 Example Workflow
 
-### User logs in with Clerk.
-### Selects topic, style, voice, and duration.
-### Gemini AI generates the script.
-### ElevenLabs generates voice audio.
-### AssemlblyAI generate caption
-### Unsplash for dynamic image 
-### Remotion composes the final video.
-### GitHub Action renders and uploads the video.
-### User previews and downloads the finished clip.
+1. **User Authentication**  
+   Login or sign up securely using **Clerk**.
+
+2. **Video Setup**  
+   Select the **topic**, **style**, **voice**, and **duration** for your short video.
+
+3. **Script Generation**  
+   **Gemini AI** generates the video script based on the selected topic.
+
+4. **Voice Synthesis**  
+   **ElevenLabs** converts the generated script into voice audio.
+
+5. **Caption Generation**  
+   **AssemblyAI** creates captions for the video.
+
+6. **Dynamic Images**  
+   Fetch relevant images using **Unsplash** to match the video content.
+
+7. **Video Composition**  
+   **Remotion** composes all assets (script, voice, images, captions) into a video preview.
+
+8. **Final Rendering**  
+   **GitHub Actions** renders the final video, uploads it to **Cloudinary**, and updates the database with the download URL.
+
+9. **User Interaction**  
+   The user can **preview**, **download**, or **export** the finished video directly from the dashboard.
+
 
 
 # 🧰 Commands
@@ -227,10 +256,3 @@ gh workflow run render.yml
 
 # 🧑‍💻 Author
 ### Mohammad Nazim Hossain
-
-
-
----
-
-✅ That’s the **entire README in one context** — just copy it and paste into your `README.md`.  
-Would you like me to add a **preview screenshot or demo GIF section** at the top (e.g. “🎥 Demo Preview”)? It looks great for GitHub landing pages.
