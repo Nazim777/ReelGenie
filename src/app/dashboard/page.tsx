@@ -6,8 +6,6 @@ import { VideoData } from "@/config/schema";
 import { eq } from "drizzle-orm";
 import { useUser } from "@clerk/nextjs";
 import { videoDataSchema } from "@/types/types";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import VideoList from "./_components/VideoList";
 import { useUserDetailContext } from "../_context/UserDetailContext";
 
@@ -16,7 +14,6 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useUser();
   const { setUserDetail } = useUserDetailContext();
-  const router = useRouter();
 
   const GetVideoList = useCallback(async () => {
     setIsLoading(true);
@@ -27,7 +24,7 @@ const Dashboard = () => {
         .from(VideoData)
         .where(userEmail ? eq(VideoData.createdBy, userEmail) : undefined);
 
-      console.log(result);
+     
       // Transform data to match the `videoDataSchema` type
       const formattedResult: videoDataSchema[] = result.map((item) => ({
         id: item.id,
@@ -82,10 +79,7 @@ const Dashboard = () => {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="font-bold text-2xl text-primary">Dashboard</h2>
-        <Button onClick={() => router.replace("/dashboard/create-new")}>
-          + Create New
-        </Button>
+        <h2 className="font-bold text-2xl ">Dashboard</h2>
       </div>
 
       {isLoading && (

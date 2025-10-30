@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import Provider from "./provider";
 import { Outfit } from 'next/font/google'
 import { Toaster } from "@/components/ui/sonner"
+import { ColorModeProvider} from "./_context/ColorModeContext";
 
 export const metadata: Metadata = {
   title: "ReelGenie",
@@ -22,12 +23,14 @@ export default function RootLayout({
       <body
         className={outfit.className}
       >
+        <ColorModeProvider>
         <ClerkProvider>
           <Provider>
             {children}
           </Provider>
           <Toaster />
         </ClerkProvider>
+        </ColorModeProvider>
       </body>
     </html>
   );

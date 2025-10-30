@@ -1,7 +1,3 @@
-
-
-
-
 'use client';
 
 import { useUserDetailContext } from "@/app/_context/UserDetailContext";
@@ -9,6 +5,7 @@ import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useColorMode } from "@/app/_context/ColorModeContext";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -22,6 +19,7 @@ const creditsOption = [
 
 export default function BuyCreditsPage() {
   const { userDetail } = useUserDetailContext();
+  const { mode } = useColorMode();
   const [selected, setSelected] = useState<{ credits: number; amount: number } | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +30,6 @@ export default function BuyCreditsPage() {
     }
 
     setLoading(true);
-
     try {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
@@ -59,9 +56,24 @@ export default function BuyCreditsPage() {
     }
   };
 
+  // Dynamic background and text color based on mode
+  const modeBg = {
+    default: 'bg-white',
+    dark: 'bg-gray-900',
+    green: 'bg-green-700',
+    orange: 'bg-orange-500',
+  };
+
+  const modeText = {
+    default: 'text-gray-800',
+    dark: 'text-gray-100',
+    green: 'text-white',
+    orange: 'text-white',
+  };
+
   return (
     <motion.div
-      className="p-6"
+      className={`p-6 ${modeBg[mode]} ${modeText[mode]}`}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -81,22 +93,18 @@ export default function BuyCreditsPage() {
         animate="visible"
         variants={{
           hidden: {},
-          visible: {
-            transition: {
-              staggerChildren: 0.1,
-            },
-          },
+          visible: { transition: { staggerChildren: 0.1 } },
         }}
       >
         {creditsOption.map((item, i) => (
           <motion.div
             key={i}
             onClick={() => setSelected(item)}
-            className={`relative border rounded-2xl p-6 cursor-pointer text-center bg-white shadow-sm hover:shadow-lg transition-all ${
+            className={`relative border rounded-2xl p-6 cursor-pointer shadow-sm hover:shadow-lg transition-all ${
               selected?.credits === item.credits
                 ? "border-primary scale-105 shadow-md"
-                : "border-gray-200"
-            }`}
+                : "border-gray-300"
+            } ${modeBg[mode]} ${modeText[mode]}`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             variants={{
@@ -105,9 +113,8 @@ export default function BuyCreditsPage() {
             }}
           >
             <h3 className="text-2xl font-semibold">{item.credits} Credits</h3>
-            <p className="text-gray-600 mt-2">${item.amount}</p>
+            <p className="mt-2">${item.amount}</p>
 
-            {/* Animated check mark */}
             <AnimatePresence>
               {selected?.credits === item.credits && (
                 <motion.div

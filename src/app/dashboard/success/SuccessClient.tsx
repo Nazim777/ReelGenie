@@ -49,9 +49,9 @@ export default function SuccessPage() {
   return (
     <div className="p-6 text-center">
       {isVerifying ? (
-        <h2 className="text-xl text-gray-500">Verifying your payment...</h2>
+        <h2 className="text-xl ">Verifying your payment...</h2>
       ) : (
-        <h2 className="text-2xl font-bold text-green-600">
+        <h2 className="text-2xl font-bold ">
           🎉 Payment Successful!
         </h2>
       )}

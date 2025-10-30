@@ -1,4 +1,7 @@
-"use client";
+
+
+'use client';
+import ColorModeToggle from "@/components/ToggleBgColor";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
@@ -7,30 +10,47 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import { MenuOptions } from "./SideNav";
 import Link from "next/link";
+import { useColorMode } from "@/app/_context/ColorModeContext";
 
 const Header = () => {
   const { userDetail } = useUserDetailContext();
   const [isMenuOpened, setisMenuOpened] = useState<boolean>(false);
   const path = usePathname();
+  const router = useRouter();
+  const { mode } = useColorMode();
 
-  const HandleToggleMenu = () => {
-    setisMenuOpened(!isMenuOpened);
+  const HandleToggleMenu = () => setisMenuOpened(!isMenuOpened);
+
+  // Define dynamic header background based on color mode
+  const modeBg = {
+    default: "bg-white",
+    dark: "bg-gray-900",
+    green: "bg-green-700",
+    orange: "bg-orange-500",
   };
-const router = useRouter();
+
+  const modeText = {
+    default: "text-gray-800",
+    dark: "text-gray-100",
+    green: "text-white",
+    orange: "text-white",
+  };
+
   return (
-    <div
-      className={` py-3 px-5 flex items-center justify-between shadow-md sticky top-0 w-full bg-white z-[999]`}
-    >
+    <div className={`py-3 px-5 flex items-center justify-between shadow-md sticky top-0 w-full z-[999] ${modeBg[mode]} ${modeText[mode]}`}>
+      {/* Mobile Side Menu */}
       <div
-        className={`md:hidden fixed pt-[2rem] px-4 left-0 h-full bottom-0 bg-white z-[999] transition-transform duration-300 max-w-[60%] w-full ease-in-out md:transform-none
-          ${isMenuOpened ? "translate-x-0" : "-translate-x-full"}`}
+        className={`md:hidden fixed pt-[2rem] px-4 left-0 h-full bottom-0 z-[999] transition-transform duration-300 max-w-[60%] w-full ease-in-out md:transform-none ${modeBg[mode]} ${
+          isMenuOpened ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {MenuOptions.map((item) => (
           <Link
             key={item.id}
             href={item.path}
-            className={`flex items-center gap-3 p-3 hover:bg-primary cursor-pointer hover:text-white
-              rounded-md ${path === item.path && "bg-primary text-white"}`}
+            className={`flex items-center gap-3 p-3 hover:bg-primary cursor-pointer hover:text-white rounded-md ${
+              path === item.path ? "bg-primary text-white" : ""
+            }`}
           >
             <span>
               {typeof item.icon === "string" ? (
@@ -49,7 +69,9 @@ const router = useRouter();
           </Link>
         ))}
       </div>
-      <div className="flex gap-4 items-center" >
+
+      {/* Logo & App Name */}
+      <div className="flex gap-4 items-center">
         <button onClick={HandleToggleMenu} className="md:hidden">
           <Menu />
         </button>
@@ -59,15 +81,20 @@ const router = useRouter();
           height={30}
           alt=""
           className="w-auto h-auto cursor-pointer"
-          onClick={()=>router.push('/')}
+          onClick={() => router.push("/")}
         />
         <h2 className="font-bold text-xl hidden md:block">ReelGenie</h2>
       </div>
+
+      {/* Right Controls */}
       <div className="flex gap-3 items-center">
+        <ColorModeToggle />
         <Image src={"/star.png"} height={20} width={20} alt="" />
         <h2>{userDetail?.credits}</h2>
         <UserButton />
       </div>
+
+      {/* Mobile overlay */}
       {isMenuOpened && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 md:hidden"

@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
   font-family: Arial, Helvetica, sans-serif;
-}
+} */
 
 @layer base {
   :root {
@@ -69,4 +69,37 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+/* Default */
+.default-mode {
+  --bg-color: white;
+  --text-color: black;
+}
+
+/* Green mode */
+.green-mode {
+  --bg-color: #00ff7f;
+  --text-color: black;
+}
+
+/* Orange mode */
+.orange-mode {
+  --bg-color: #ffa500;
+  --text-color: black;
+}
+
+/* Dark mode */
+.dark {
+  --bg-color: #1a1a1a;
+  --text-color: white;
+}
+
+/* Apply variables */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+   font-family: Arial, Helvetica, sans-serif;
 }

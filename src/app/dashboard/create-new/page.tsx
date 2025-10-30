@@ -17,7 +17,7 @@ import { useUserDetailContext } from "@/app/_context/UserDetailContext";
 import { toast } from "sonner";
 import { eq } from "drizzle-orm";
 import SelectVoice from "./_components/SelectVoice";
-
+import { useColorMode } from '@/app/_context/ColorModeContext';
 const CreateNew = () => {
   const [formData, setFormData] = useState<formDataProps>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -291,21 +291,40 @@ const CreateNew = () => {
     }
   }, [videoData, videoScript, audioFileUrl, captions, imageList]);
 
+
+
+  const { mode } = useColorMode();
+
+  const modeClasses = {
+    default: 'bg-white text-gray-800',
+    dark: 'bg-gray-900 text-gray-100',
+    green: 'bg-green-800 text-white',
+    orange: 'bg-orange-600 text-white',
+  };
   return (
-    <div className="lg:px-10">
-      <h2 className="font-bold text-4xl text-primary text-center">
+    <div className={`lg:px-10 ${modeClasses[mode]}`}>
+      <h2 className={`font-bold text-4xl text-center mb-6`}>
         Create New
       </h2>
-      <div className="mt-10 shadow-md p-10 lg:px-6">
+
+      <div
+        className={`mt-10 shadow-md p-10 lg:px-6 rounded-lg ${
+          mode === 'dark' ? 'bg-gray-800' : mode === 'green' ? 'bg-green-700' : mode === 'orange' ? 'bg-orange-500' : 'bg-white'
+        }`}
+      >
         <SelectTopic onUserSelect={handleInputChange} />
         <SelectStyle onUserSelect={handleInputChange} />
-         <SelectVoice onUserSelect={handleInputChange} />
+        <SelectVoice onUserSelect={handleInputChange} />
         <SelectDuration onUserSelect={handleInputChange} />
 
-        <Button onClick={createClickHandler} className="mt-10 w-full">
-          Create Short Video
+        <Button
+          onClick={createClickHandler}
+          className={`mt-10 w-full ${mode === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-primary hover:bg-primary-dark'}`}
+        >
+          {loading ? 'Creating...' : 'Create Short Video'}
         </Button>
       </div>
+
       <CustomLoading loading={loading} />
       <PlayerDialog playVideo={playVideo} videoId={videoId} />
     </div>
