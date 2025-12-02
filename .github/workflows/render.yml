@@ -92,8 +92,8 @@ jobs:
                 component={RemotionVideo}
                 durationInFrames={${{ github.event.inputs.durationInFrames }}}
                 fps={30}
-                width={1280}
-                height={720}
+                width={300}
+                height={375}
                 defaultProps={defaultProps}
               />
             </>

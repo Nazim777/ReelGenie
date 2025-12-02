@@ -14,18 +14,18 @@ import CustomError from "@/components/CustomError";
 const Dashboard = () => {
   const [videoList, setVideoList] = useState<videoDataSchema[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error,setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8; 
+  const pageSize = 8;
 
   const { user } = useUser();
   const { setUserDetail } = useUserDetailContext();
 
   const GetVideoList = useCallback(async () => {
     setIsLoading(true);
-    setError(null)
+    setError(null);
     try {
       const userEmail = user?.primaryEmailAddress?.emailAddress || "";
       const result = await db
@@ -42,10 +42,10 @@ const Dashboard = () => {
         createdBy: item.createdBy!,
       }));
 
-      setVideoList(formattedResult);
+      setVideoList(formattedResult.reverse());
     } catch (error) {
       console.error("Error fetching video list:", error);
-      setError('Failed to laod the videos. Please try again later!')
+      setError("Failed to laod the videos. Please try again later!");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,6 @@ const Dashboard = () => {
       GetVideoList();
     }
   }, [user, GetVideoList]);
-
 
   // Verify user (unchanged)
   const verifyUser = useCallback(async () => {
@@ -81,8 +80,6 @@ const Dashboard = () => {
     if (user) verifyUser();
   }, [user, verifyUser]);
 
-
-  
   const totalPages = Math.ceil(videoList.length / pageSize);
   const paginatedData = videoList.slice(
     (currentPage - 1) * pageSize,
@@ -90,11 +87,12 @@ const Dashboard = () => {
   );
 
   const goToPage = (page: number) => setCurrentPage(page);
-  const nextPage = () => currentPage < totalPages && setCurrentPage(p => p + 1);
-  const prevPage = () => currentPage > 1 && setCurrentPage(p => p - 1);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage((p) => p + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
 
-  if(error){
-    return <CustomError error={error}/>
+  if (error) {
+    return <CustomError error={error} />;
   }
 
   return (
@@ -104,11 +102,7 @@ const Dashboard = () => {
       </div>
 
       {/* Loading */}
-      {isLoading && (
-       <Loader loading="Loading Videos"/>
-      )}
-
-     
+      {isLoading && <Loader loading="Loading Videos" />}
 
       {/* Empty */}
       {!isLoading && videoList.length === 0 && <EmptyState />}
@@ -159,4 +153,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
