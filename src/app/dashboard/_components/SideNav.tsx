@@ -36,7 +36,7 @@ const SideNav = () => {
             key={item.id}
             href={item.path}
             className={`flex items-center gap-3 p-3 rounded-md cursor-pointer 
-              ${path === item.path ? colors.active + ' text-white' : colors.text + ' hover:' + colors.active + ' hover:text-white'}`}
+              ${path === item.path ? colors.active + ' text-white' : colors.text + ' hover:' + colors.active + ' hover:text-gray-400'}`}
           >
             <span>
               {typeof item.icon === 'string' ? (

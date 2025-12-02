@@ -40,26 +40,7 @@ export default function Page() {
             layout: {
               socialButtonsVariant: "iconButton",
               logoImageUrl: "/logo.png",
-            },
-            variables: {
-              colorBackground: "#2e1065", // Purple background for form
-              colorPrimary: "#facc15", // Yellow buttons
-              colorText: "#ffffff",
-              colorInputBackground: "#3b0764",
-              colorInputText: "#fff"
-            },
-            elements: {
-              formButtonPrimary:
-                "bg-secondary hover:bg-yellow-400 text-black font-semibold transition-all duration-300",
-              formFieldInput:
-                "bg-primary/20 border border-secondary/30 text-white placeholder-white/60 focus:ring-2 focus:ring-secondary",
-              formFieldLabel: "text-white font-medium",
-              card: "bg-primary/20 backdrop-blur-xl rounded-2xl shadow-xl p-8 border border-white/10",
-              headerTitle: "text-secondary text-2xl font-bold",
-              headerSubtitle: "text-white/70",
-              footerActionText: "text-white/80",
-              footerActionLink: "text-secondary hover:text-yellow-400 font-semibold",
-            },
+            }
           }}
         />
         </div>
