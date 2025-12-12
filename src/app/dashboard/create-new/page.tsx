@@ -94,9 +94,12 @@ const CreateNew = () => {
       }));
       setVideoScript(data.result);
       console.log("video script data", data.result);
-      await GenerateAudioFile(data.result);
+      if(data?.result){
+        await GenerateAudioFile(data.result);
+      }
     } catch (e) {
       console.error("Failed to fetch video script:", e);
+      toast.error('Failed to fetch video script, please try again later!')
     } finally {
       setLoading(false);
     }
