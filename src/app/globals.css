@@ -74,8 +74,8 @@
 
 /* Default */
 .default-mode {
-  --bg-color: white;
-  --text-color: black;
+  --bg-color: #030712;
+  --text-color: white;
 }
 
 /* Green mode */
@@ -103,3 +103,24 @@ body {
   transition: background-color 0.3s, color 0.3s;
    font-family: Arial, Helvetica, sans-serif;
 }
+
+ /* body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #030712;
+        color: white;
+      }
+      .gradient-text {
+        background: linear-gradient(to right, #a855f7, #ec4899, #f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      } */

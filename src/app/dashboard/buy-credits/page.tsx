@@ -5,7 +5,7 @@ import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useColorMode } from "@/app/_context/ColorModeContext";
+
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -19,7 +19,6 @@ const creditsOption = [
 
 export default function BuyCreditsPage() {
   const { userDetail } = useUserDetailContext();
-  const { mode } = useColorMode();
   const [selected, setSelected] = useState<{ credits: number; amount: number } | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -56,24 +55,11 @@ export default function BuyCreditsPage() {
     }
   };
 
-  // Dynamic background and text color based on mode
-  const modeBg = {
-    default: 'bg-white',
-    dark: 'bg-gray-900',
-    green: 'bg-green-700',
-    orange: 'bg-orange-500',
-  };
-
-  const modeText = {
-    default: 'text-gray-800',
-    dark: 'text-gray-100',
-    green: 'text-white',
-    orange: 'text-white',
-  };
+  
 
   return (
     <motion.div
-      className={`p-6 ${modeBg[mode]} ${modeText[mode]}`}
+      className={`p-6`}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -104,7 +90,7 @@ export default function BuyCreditsPage() {
               selected?.credits === item.credits
                 ? "border-primary scale-105 shadow-md"
                 : "border-gray-300"
-            } ${modeBg[mode]} ${modeText[mode]}`}
+            } `}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             variants={{

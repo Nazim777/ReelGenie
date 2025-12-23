@@ -29,14 +29,14 @@ const SideNav = () => {
   const colors = modeColors[mode];
 
   return (
-    <div className={`w-64 h-screen shadow-md p-5 ${colors.bg}`}>
+    <div className={`w-72 bg-[#0a0f1d]/50 backdrop-blur-xl border-r border-white/5 flex flex-col p-6 h-screen`}>
       <div className="grid gap-4">
         {MenuOptions.map(item => (
           <Link
             key={item.id}
             href={item.path}
             className={`flex items-center gap-3 p-3 rounded-md cursor-pointer 
-              ${path === item.path ? colors.active + ' text-white' : colors.text + ' hover:' + colors.active + ' hover:text-gray-400'}`}
+              ${path === item.path ? colors.active + ' text-white' : 'text-gray-200' + ' hover:' + colors.active + ' hover:text-gray-400'}`}
           >
             <span>
               {typeof item.icon === 'string' ? (

@@ -144,20 +144,13 @@ const pollDownloadURL = useCallback(async () => {
 
   
  const { mode } = useColorMode();
-const bgClass =
-    mode === 'dark'
-      ? 'bg-gray-900 text-white'
-      : mode === 'green'
-      ? 'bg-green-100 text-green-900'
-      : mode === 'orange'
-      ? 'bg-orange-100 text-orange-900'
-      : 'bg-white text-gray-900';
+
   // Render dialog only if open and data loaded
   if (!openDialog || !videoData) return null;
  
   return (
     <Dialog open={openDialog}>
-      <DialogContent className={`flex flex-col items-center z-[1000] ${bgClass} transition-colors duration-300`}>
+      <DialogContent className={`flex flex-col items-center z-[1000] bg-gray-800 text-gray-200 transition-colors duration-300`}>
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold my-5 text-center">
             Your video is ready

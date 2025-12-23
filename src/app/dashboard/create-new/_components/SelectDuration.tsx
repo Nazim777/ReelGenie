@@ -14,11 +14,12 @@ const SelectDuration = ({ onUserSelect }: SelectProps) => {
   const { mode } = useColorMode();
 
   // Tailwind classes based on mode
+  
   const modeClasses = {
     default: {
-      text: 'text-gray-800',
-      bg: 'bg-white',
-      border: 'border-gray-300',
+      text: 'text-gray-200',
+      bg: 'bg-gray-800',
+      border: 'border-gray-600',
       placeholder: 'text-gray-400',
     },
     dark: {
@@ -45,8 +46,8 @@ const SelectDuration = ({ onUserSelect }: SelectProps) => {
 
   return (
     <div className="mt-7">
-      <h2 className={`font-bold text-2xl ${classes.text}`}>Duration</h2>
-      <p className={`${mode==='green'?'text-white':'text-gray-600'}`}>Select the duration of your video</p>
+      <h2 className={`font-bold text-2xl `}>Duration</h2>
+      <p >Select the duration of your video</p>
       <Select
         onValueChange={(value) => {
           if (value !== 'Custom Prompt') onUserSelect('duration', value);

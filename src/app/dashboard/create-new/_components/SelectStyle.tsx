@@ -2,10 +2,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { SelectProps } from "@/types/types";
-import { useColorMode } from "@/app/_context/ColorModeContext";
 
 const SelectStyle = ({ onUserSelect }: SelectProps) => {
-  const { mode } = useColorMode();
+  
   const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
 
   const styleOptions = [
@@ -16,17 +15,12 @@ const SelectStyle = ({ onUserSelect }: SelectProps) => {
     { name: 'GTA', image: '/gta.jpg' },
   ];
 
-  const modeClasses = {
-    default: 'text-gray-800',
-    dark: 'text-gray-200',
-    green: 'text-white',
-    orange: 'text-white',
-  };
+  
 
   return (
     <div className="mt-7">
-      <h2 className={`font-bold text-2xl ${modeClasses[mode]}`}>Style</h2>
-      <p className={`${mode==='green'?'text-white':'text-gray-600'}`}>Select your video style</p>
+      <h2 className={`font-bold text-2xl`}>Style</h2>
+      <p >Select your video style</p>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-5 mt-3">
         {styleOptions.map((item, idx) => (
           <div

@@ -2,6 +2,9 @@ import { NextConfig } from "next";
 import { Configuration } from "webpack";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [new URL('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200&h=675')],
+  },
   experimental: {
     serverActions:{},
   },

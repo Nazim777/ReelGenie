@@ -1,6 +1,4 @@
-
-
-'use client';
+"use client";
 import ColorModeToggle from "@/components/ToggleBgColor";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
@@ -29,20 +27,17 @@ const Header = () => {
     orange: "bg-orange-500",
   };
 
-  const modeText = {
-    default: "text-gray-800",
-    dark: "text-gray-100",
-    green: "text-white",
-    orange: "text-white",
-  };
+  
 
   return (
-    <div className={`py-3 px-5 flex items-center justify-between shadow-md sticky top-0 w-full z-[999] ${modeBg[mode]} ${modeText[mode]}`}>
+    <div
+      className={`py-3 px-5 flex items-center justify-between shadow-md sticky top-0 w-full z-[999] bg-gray-900`}
+    >
       {/* Mobile Side Menu */}
       <div
-        className={`md:hidden fixed pt-[2rem] px-4 left-0 h-full bottom-0 z-[999] transition-transform duration-300 max-w-[60%] w-full ease-in-out md:transform-none ${modeBg[mode]} ${
-          isMenuOpened ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed pt-[2rem] px-4 left-0 h-full bottom-0 z-[999] transition-transform duration-300 max-w-[60%] w-full ease-in-out md:transform-none ${
+          modeBg[mode]
+        } ${isMenuOpened ? "translate-x-0" : "-translate-x-full"}`}
       >
         {MenuOptions.map((item) => (
           <Link

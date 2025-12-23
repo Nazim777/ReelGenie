@@ -40,7 +40,7 @@ const DashboardLayout = ({ children }: Props) => {
 
   return (
     <div>
-      <div className="hidden md:block h-screen bg-white fixed mt-[65px]">
+      <div className="hidden md:block h-screen  fixed mt-[65px]">
         <SideNav />
       </div>
       <div>

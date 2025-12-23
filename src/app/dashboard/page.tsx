@@ -117,7 +117,7 @@ const Dashboard = () => {
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-40"
+              className="px-4 py-2  rounded-md disabled:opacity-40"
             >
               Previous
             </button>
@@ -130,7 +130,7 @@ const Dashboard = () => {
                   key={page}
                   onClick={() => goToPage(page)}
                   className={`px-4 py-2 rounded-md border ${
-                    currentPage === page ? "bg-black text-white" : "bg-white"
+                    currentPage === page ? "bg-white text-black" : "bg-black"
                   }`}
                 >
                   {page}
@@ -141,7 +141,7 @@ const Dashboard = () => {
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-40"
+              className="px-4 py-2  rounded-md disabled:opacity-40"
             >
               Next
             </button>

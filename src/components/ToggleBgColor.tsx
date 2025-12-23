@@ -13,33 +13,19 @@ export default function ColorModeDropdown() {
     { label: 'Orange', value: 'orange' },
   ];
 
-  // Define colors for dropdown based on mode
-  const modeBg = {
-    default: 'bg-white text-gray-700',
-    dark: 'bg-gray-800 text-gray-200',
-    green: 'bg-green-700 text-white',
-    orange: 'bg-orange-500 text-white',
-  };
-
-  const hoverBg = {
-    default: 'hover:bg-gray-100',
-    dark: 'hover:bg-gray-700',
-    green: 'hover:bg-green-600',
-    orange: 'hover:bg-orange-400',
-  };
 
   return (
     <div className="relative inline-block text-left">
-      <button
+      {/* <button
         onClick={() => setOpen(!open)}
-        className={`inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 text-sm font-medium focus:outline-none ${modeBg[mode]}`}
+        className={`inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 text-sm font-medium focus:outline-none`}
       >
         Mode: {mode.charAt(0).toUpperCase() + mode.slice(1)}
-      </button>
+      </button> */}
 
       {open && (
         <div
-          className={`absolute mt-2 w-36 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 ${modeBg[mode]}`}
+          className={`absolute mt-2 w-36 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 text-gray-200 bg-gray-800`}
         >
           {modes.map((m) => (
             <div
@@ -48,7 +34,7 @@ export default function ColorModeDropdown() {
                 setMode(m.value as any);
                 setOpen(false);
               }}
-              className={`cursor-pointer px-4 py-2 ${hoverBg[mode]} ${
+              className={`cursor-pointer px-4 py-2  ${
                 mode === m.value ? 'font-bold' : ''
               }`}
             >

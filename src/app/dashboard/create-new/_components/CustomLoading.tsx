@@ -13,7 +13,7 @@ type CustomLoadingProps = {
 const CustomLoading = ({loading}: CustomLoadingProps) => {
   return (
     <AlertDialog open={loading}>
-      <AlertDialogContent>
+      <AlertDialogContent className="text-gray-200 bg-gray-800">
         <AlertDialogTitle className="flex flex-col items-center my-10">
           <Image src={'/loading.gif'} width={100} height={100} alt=""/>
           <AlertDialogDescription>Generating your video... Do not Refresh</AlertDialogDescription>
